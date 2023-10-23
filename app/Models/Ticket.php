@@ -38,7 +38,7 @@ class Ticket extends Model
         return $this->hasMany(Log::class);
     }
 
-    public function createdBy()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

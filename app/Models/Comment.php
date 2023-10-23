@@ -22,7 +22,7 @@ class Comment extends Model
     {
         return $this->hasMany(CommentImage::class);
     }
-    public function createdBy()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
