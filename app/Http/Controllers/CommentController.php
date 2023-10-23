@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Models\CommentImage;
 use App\Models\Log;
+use App\Mail\TicketNotification;
+use Illuminate\Support\Facades\Mail;
 
 class CommentController extends Controller
 {
@@ -38,6 +40,21 @@ class CommentController extends Controller
         $comment = new Comment();
         $comment->fill($request->all());
         $comment->save();
+
+        $ticketNo = $comment->ticket->ticket_no;
+        $ticketLink = url('/ticket/' . $comment->ticket->id);
+        $view = "email.comment_notification";
+        $data = [
+            'ticketNo' => $ticketNo,
+            'ticketLink' => $ticketLink,
+        ];
+        $subject = "New comment on ticket";
+
+        if( $comment->user->role == 2 ){
+            Mail::to($comment->user->email, 'Harsh Raikwar')->send(new TicketNotification($view, $data, $subject));
+        } else{ 
+            Mail::to('abhishek.choudhary13062000@gmail.com', 'Abhishek Choudhary')->send(new TicketNotification($view, $data, $subject));
+        }
 
         if ($request->hasFile('images')) {
             $images = $request->file('images');

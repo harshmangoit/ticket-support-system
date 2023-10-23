@@ -254,24 +254,31 @@ class TicketController extends Controller
 
     public function close(Request $request, string $id)
     {
-        $ticket = Ticket::where('id', $id)->update(['status' => 1]);
-        dd($ticket);
-
-        $ticketNo = $ticket->ticket_no;
-        $ticketLink = url('/ticket/' . $ticket->id);
-        $view = "email.user_notification";
-        $data = [
-            'ticketNo' => $ticketNo,
-            'ticketLink' => $ticketLink,
-        ];
-        $subject = "Ticket Closed";
-        Mail::to('harshraikwar42@gmail.com', 'Harsh Raikwar')->send(new TicketNotification($view, $data, $subject));  
+        Ticket::where('id', $id)->update(['status' => 1]);
 
         $log = new Log();
         $log->ticket_id = $id;
         $log->user_id = $request->query('user_id');
         $log->action = 'Closed the ticket.';
         $log->save();
+
+        if (auth()->user()->role == 2) {
+            $role = "Agent";
+        }else {
+            $role = "Admin";
+        }     
+        
+        $ticketNo = $log->ticket->ticket_no;
+        $ticketLink = url('/ticket/' . $log->ticket->id);
+        $view = "email.user_notification";
+        $data = [
+            'ticketNo' => $ticketNo,
+            'ticketLink' => $ticketLink,
+            'role' => $role,
+        ];
+        $subject = "Ticket Closed";
+        Mail::to('harshraikwar42@gmail.com', 'Harsh Raikwar')->send(new TicketNotification($view, $data, $subject));
+
         return redirect()->route('ticket.index')->with('success', 'Ticket closed successfully');
     }
 }
