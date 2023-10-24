@@ -32,7 +32,7 @@
         <div class="flex items-center justify-end mt-4">
 
             <x-primary-button class="ml-2">
-            <a href="{{ route('register') }}">{{ __('New User') }}</a>
+                <a href="{{ route('register') }}">{{ __('New User') }}</a>
             </x-primary-button>
 
             @if (Route::has('password.request'))
@@ -42,12 +42,16 @@
             @endif
 
             <x-primary-button class="ml-3">
-                <a href="{{ route('google.login') }}">{{ __('Google Login') }}</a>
-            </x-primary-button>
-
-            <x-primary-button class="ml-3">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+
+        <x-primary-button class="ml-3 mt-3">
+            <a href="google/login">{{ __('Sign in with Google') }}</a>
+        </x-primary-button>
+
+        <x-primary-button class="ml-3 mt-3">
+            <a href="github/login">{{ __('Sign in with Github') }}</a>
+        </x-primary-button>
     </form>
 </x-guest-layout>

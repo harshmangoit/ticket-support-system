@@ -9,13 +9,13 @@ use Laravel\Socialite\Facades\Socialite;
 
 class LoginConroller extends Controller
 {
-    public function provider()
+    public function provider($social)
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver($social)->redirect();
     }
-    public function callbackHandel()
+    public function callbackHandel($social)
     {
-        $user = Socialite::driver('google')->user();
+        $user = Socialite::driver($social)->user();
 
         $data = User::where('email', $user->email)->first();
         if (is_null($data)) {
